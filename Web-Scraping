@@ -1,0 +1,114 @@
+import selenium
+import pandas as pd
+from selenium.webdriver import Chrome, ChromeOptions
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from pandas_ods_reader import read_ods
+from selenium.webdriver.support.select import Select
+import pyperclip as pc
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
+import datetime
+from datetime import date,datetime,timezone
+import time 
+
+servico=Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=servico)
+action = ActionChains(driver)
+
+
+def logon(login,senha,url):
+    driver.get(url) #pagina login Bifrost
+    driver.find_element(By.XPATH,"/html/body/div[1]/main/div/div/div[2]/div/div/form/label[1]/input").send_keys(login)
+    time.sleep(2)
+    driver.find_element(By.XPATH, "/html/body/div[1]/main/div/div/div[2]/div/div/form/label[2]/input").send_keys(senha)
+    time.sleep(1)
+    driver.find_element(By.NAME, 'commit').click()
+    
+logon('#','#','#') # funcão para logar
+
+    
+for i in base.index:
+   
+    def login(email,senha,url):   
+        driver.get(url)#qcantigo
+        time.sleep(1)
+        driver.find_element(By.NAME,"user[login]").send_keys(email) ##preencher login
+        time.sleep(1)
+        driver.find_element(By.ID,"password").send_keys(senha) ##preencher senha
+        time.sleep(1)
+        driver.find_element(By.ID,"btnLogin").click() ## clicar botão login
+    login ('#','#','#')   
+    
+
+
+    time.sleep(2)
+    driver.find_element(By.XPATH, "/html/body/div[1]/div[1]/div[2]/ul/li[2]/a").click() ##clicar botão 'concurso'   
+    time.sleep(2)
+    driver.find_element(By.ID, 'search_nome_contains').send_keys(base.loc[i,'Nome']) #Percorrer linhas da tabela
+    time.sleep(2)
+    driver.find_element(By.NAME, 'commit').click() # clicar no botão Ok
+    time.sleep(2)
+    driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]/table/tbody/tr/td[2]/a').click() # clicar no concurso
+    instituto = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]/div[7]/p').text #pegar instituto
+
+
+    characters = "1234567890()"
+    for x in range(len(characters)):
+        instituto = instituto.replace(characters[x],'')
+
+    banca = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]/div[8]/p/a').text.strip() #banca
+
+
+    driver.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[2]/div/div/a[1]').click() #clicou no editar
+
+            #pegar dados do adim
+    ano = driver.find_element(By.ID, "concurso_ano").get_attribute('value') # pegou ano
+    data = driver.find_element(By.ID, "aberto_em").get_attribute('value') # pegou a data
+    descri  = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]/form/fieldset/div[13]/div/div').text #descrição
+
+    driver.get('https://www.qconcursos.com/admin/bifrost/contests/new') #pagina login Bifrost
+ 
+            
+    def colar (xPATH,texto):
+
+
+        driver.find_element(xPATH).send_keys(texto)
+        time.sleep(1)                   #campo de descrição
+        
+    colar (By.XPATH,'/html/body/div[1]/div/main/form/div/div/div/div/div/div[6]/div/div/div/div[3]',descri)
+    colar('/html/body/div[1]/div/main/form/div/div/div/div/div/div[4]/div[1]/div/input',ano)
+    colar('/html/body/div[1]/div/main/form/div/div/div/div/div/div[3]/div[2]/div/span/span[1]/span')
+    colar ('/html/body/div[1]/div/main/form/div/div/div/div/div/div[5]/div[1]/div/input',data)
+
+
+    result=driver.find_element(By.XPATH, "/html/body/div[1]/div/main/form/div/div/div/div/div/div[2]/div[1]/div/span/span[1]/span/span[1]").click()
+    action = ActionChains(driver)
+    action.double_click(result)
+    ActionChains(driver).send_keys("RES").perform()
+    ActionChains(driver).send_keys(Keys.ENTER).perform()
+
+    time.sleep(2)
+
+    cadastro_instituto= driver.find_element(By.XPATH,'/html/body/div[1]/div/main/form/div/div/div/div/div/div[3]/div[1]/div/span/span[1]/span').click()        
+    action = ActionChains(driver)
+    action.double_click(cadastro_instituto)
+    ActionChains(driver).send_keys(instituto[0:35]).perform()
+    time.sleep(3)
+    driver.find_element(By.XPATH,'/html/body/span/span/span[2]/ul/li').click()
+                        #ActionChains(driver).send_keys(Keys.ENTER).perform()
+
+    banc = driver.find_element(By.XPATH, "/html/body/div[1]/div/main/form/div/div/div/div/div/div[3]/div[2]/div/span/span[1]/span").click()
+    action = ActionChains(driver)
+    action.double_click(banc)
+    ActionChains(driver).send_keys(banca).perform()
+    time.sleep(3)
+    driver.find_element(By.XPATH,'/html/body/span/span/span[2]/ul/li').click()
+
+    driver.find_element(By.XPATH,'/html/body/div[1]/div/main/form/div/div/div/div/div/div[1]/div[1]/div/input').send_keys(base.loc[i,'slug'])
+    time.sleep(3)
+    driver.find_element(By.XPATH,'/html/body/div[1]/div/main/form/header/div[2]/div[1]/button/span').click()
+    time.sleep(2)
+    driver.refresh()
